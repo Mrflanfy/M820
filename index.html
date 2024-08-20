@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Cumpleaños Mindrey</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@400;700&display=swap');
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(45deg, #FFC1CC, #FFDEB3);
+            font-family: 'Roboto', sans-serif;
+            -webkit-tap-highlight-color: transparent; /* Elimina la sombra en dispositivos móviles */
+        }
+
+        #card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        #message {
+            font-family: 'Pacifico', cursive;
+            font-size: 2em;
+            color: #FF6F61;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            text-transform: capitalize;
+        }
+
+        #heart {
+            font-size: 0.5em;
+            color: #FF6F61;
+            animation: heartbeat 1.5s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        #pig {
+            width: 100%;
+            max-width: 250px;
+            border-radius: 50%;
+            border: 7px solid #FF6F61;
+            animation: float 3s ease-in-out infinite;
+            cursor: pointer;
+            position: relative;
+            user-select: none; /* Evita la selección del elemento */
+            -webkit-user-drag: none; /* Evita que se arrastre la imagen */
+        }
+
+        #speaker {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 1.5em;
+            color: #FF6F61;
+        }
+
+        #speechBubble {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #FFDEB3;
+            border: 2px solid #FF6F61;
+            border-radius: 15px;
+            padding: 10px 20px;
+            font-family: 'Pacifico', cursive;
+            font-size: 1.2em;
+            color: #FF6F61;
+            white-space: nowrap;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 20;
+        }
+
+        #speechBubble:before {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: #FF6F61 transparent transparent transparent;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ffcc00;
+            opacity: 0.7;
+            animation: confetti-fall 3s infinite;
+        }
+
+        .confetti:nth-child(2n) {
+            background-color: #ff4081;
+            width: 12px;
+            height: 12px;
+        }
+
+        .confetti:nth-child(3n) {
+            background-color: #3f51b5;
+            width: 14px;
+            height: 14px;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            #card {
+                padding: 15px;
+                max-width: 90%;
+            }
+
+            #message {
+                font-size: 1.5em;
+                flex-direction: column;
+                text-transform: capitalize;
+            }
+
+            #heart {
+                margin-top: 10px;
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="card">
+        <img id="pig" src="cerdito.png" alt="Cerdito" onclick="animatePig()">
+        <div id="speechBubble">Touche me</div>
+        <div id="message">¡Feliz Cumpleaños Mindrey!<span id="heart">❤️</span></div>
+        <div id="speaker" onclick="toggleMusic()">🔊</div>
+    </div>
+
+    <audio id="kissSound" src="sound.mp3" preload="auto"></audio>
+    <audio id="pianoMusic" src="piano.mp3" preload="auto"></audio>
+
+    <script>
+        let isMusicPlaying = false;
+
+        function createConfetti() {
+            const confettiElement = document.createElement('div');
+            confettiElement.classList.add('confetti');
+            confettiElement.style.left = `${Math.random() * 100}vw`;
+            confettiElement.style.animationDelay = `${Math.random() * 2}s`;
+            confettiElement.style.transform = `rotate(${Math.random() * 360}deg)`;
+            document.body.appendChild(confettiElement);
+
+            setTimeout(() => {
+                confettiElement.remove();
+            }, 3000);
+        }
+
+        for (let i = 0; i < 150; i++) {
+            createConfetti();
+        }
+
+        setInterval(createConfetti, 300);
+
+        function animatePig() {
+            const pig = document.getElementById('pig');
+            const kissSound = document.getElementById('kissSound');
+
+            // Reproduce el sonido
+            kissSound.play();
+
+            // Agrega la animación de acercamiento
+            pig.style.transition = 'transform 0.5s ease-in-out';
+            pig.style.transform = 'scale(1.5)'; // Aumenta el tamaño del cerdito
+
+            // Devuelve a su tamaño original después de la animación
+            setTimeout(() => {
+                pig.style.transition = 'transform 0.5s ease-in-out';
+                pig.style.transform = 'scale(1)';
+            }, 500);
+        }
+
+        function toggleMusic() {
+            const pianoMusic = document.getElementById('pianoMusic');
+            const speakerIcon = document.getElementById('speaker');
+
+            if (isMusicPlaying) {
+                pianoMusic.pause();
+                pianoMusic.currentTime = 0; // Reinicia la música desde el principio
+                speakerIcon.textContent = '🔊'; // Cambia el ícono al parlante
+            } else {
+                pianoMusic.play();
+                speakerIcon.textContent = '🔇'; // Cambia el ícono a silenciado
+            }
+
+            isMusicPlaying = !isMusicPlaying;
+        }
+
+        const pianoMusic = document.getElementById('pianoMusic');
+        pianoMusic.addEventListener('ended', () => {
+            const speakerIcon = document.getElementById('speaker');
+            speakerIcon.textContent = '🔊'; // Cambia el ícono al parlante cuando la música termine
+            isMusicPlaying = false;
+        });
+
+        function toggleSpeechBubble() {
+            const speechBubble = document.getElementById('speechBubble');
+            speechBubble.style.display = speechBubble.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Alterna la nube de diálogo cada 4 segundos
+        setInterval(toggleSpeechBubble, 4000);
+    </script>
+</body>
+</html>
